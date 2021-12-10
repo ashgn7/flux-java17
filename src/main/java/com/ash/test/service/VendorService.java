@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -30,20 +31,23 @@ public class VendorService {
     }
 
     public void addVendor(VendorRequest vendorRequest) {
-        Vendor vendor = Vendor.builder().name(vendorRequest.getName()).displayName(vendorRequest.getDisplayName())
-                .description(vendorRequest.getDescription()).
+        var vendor = Vendor.builder().name(vendorRequest.getName()).
+                displayName(vendorRequest.getDisplayName()).
+                description(vendorRequest.getDescription()).
                 id(ObjectId.get().toString()).build();
         log.info("Adding vendor to DB ==>> {}", vendor);
         vendorRepository.save(vendor).subscribe();
     }
 
     public void addVendors(Integer count) {
-        for (int i = 0; i < count; i++) {
-            Vendor vendor = Vendor.builder().name(vendorRequest.getName()).displayName(vendorRequest.getDisplayName())
-                    .description(vendorRequest.getDescription()).
-                    id(ObjectId.get().toString()).build();
-        }
-        vendorRepository.
-        log.info("Adding vendor to DB ==>> {}", vendor);
+        var vendorList = IntStream.range(0, count).
+                mapToObj(i -> Vendor.builder().name("vendorName " + i).
+                        displayName("vendorName " + i).
+                        description("vendorDesc " + i).
+                        multiplier(i * 3).
+                        customerId("Id " + i).
+                id(ObjectId.get().toString()).build()).collect(Collectors.toList());
+        log.info("Added {} vendors to DB ", count);
+        vendorRepository.saveAll(vendorList).subscribe();
     }
 }

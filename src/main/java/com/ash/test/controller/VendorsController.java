@@ -49,7 +49,7 @@ public class VendorsController {
 
     @PostMapping(value = "/create_multi_vendors/{count}", produces = MediaType.APPLICATION_JSON_VALUE)
     public void createVendors(@PathVariable("count") Integer count) {
-        log.info("Creating vendor with request {} at {}", vendorRequest, LocalDateTime.now());
+        log.info("Creating {} vendors at {}", count, LocalDateTime.now());
         vendorService.addVendors(count);
         log.info("Vendor saved successfully");
     }
